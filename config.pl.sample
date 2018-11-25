@@ -1,0 +1,20 @@
+#!/usr/bin/perl
+#
+# This file is a configuration for imapalrm.pl
+# Copy it to config.pl
+
+# Mail server properties
+our $host = 'mail.server.com';
+our $user = 'username';
+our $password = 'password';
+our %options = (
+   port => 993,
+   use_ssl => 1,
+);
+
+# Telegram properties
+our $token = 'tg_token';
+our $chat_id = 'tg_chat_id';
+
+# Some text to send on alarm
+our $text = 'Achtung!!!';
