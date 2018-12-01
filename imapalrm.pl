@@ -10,13 +10,16 @@ use utf8;
 binmode STDOUT, ':utf8';
 
 use Net::IMAP::Simple;
+use Email::Simple;
+use Encode 'decode';
 use WWW::Telegram::BotAPI;
 use Cwd 'abs_path';
 
 my $D = abs_path $0;
 $D =~ s{/[^/]*$}{}s;
 
-our ($host, $user, $password, %options, $token, $chat_id, $text);
+our ($host, $user, $password, %options, $token, $chat_id, $text, $mailbox);
+our ($mail_subj_re);
 
 for my $F ("$D/config.pl.sample", "$D/config.pl") {
    require $F if -f $F;
@@ -36,7 +39,12 @@ sub alarm_needed {
 
    $imap->login($user, $password) or die "Login: " . $imap->errstr;
 
-   $imap->unseen('INBOX')
+   return $imap->unseen($mailbox) unless defined $mail_subj_re;
+
+   return 0+ grep { m{$mail_subj_re} } map {
+      decode('MIME-Header',
+      Email::Simple->new(join '', @{ $imap->top($_) })->header('Subject') )
+   } $imap->search('UNSEEN');
 }
 
 sub alarm_raise {

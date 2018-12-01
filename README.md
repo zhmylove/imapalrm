@@ -16,12 +16,14 @@ $ chmod 600 config.pl
 ```
 
 And add something like the line below to your crontab(5) file.
+Such a config will trigger an alarm every 30 seconds (60/2).
 
 ```
-* * * * * /home/user/bin/imapalrm.pl
+* * * * * /home/user/bin/imapalrm.pl 2
 ```
 
 ## Dependencies
 
 * cpan WWW::Telegram::BotAPI
 * cpan Net::IMAP::Simple
+* cpan Email::Simple

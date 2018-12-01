@@ -18,3 +18,12 @@ our $chat_id = 'tg_chat_id';
 
 # Some text to send on alarm
 our $text = 'Achtung!!!';
+
+# Mailbox name
+our $mailbox = 'INBOX';
+
+# RE for subject. Example: our $mail_subj_re = qr/\[задача\]/;
+our $mail_subj_re = undef;
+
+# Should be on the last line
+1;
