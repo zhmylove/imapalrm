@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 # made by: KorG
+# USAGE: $0 [frequency]
 
 use strict;
 use v5.18;
@@ -21,6 +22,14 @@ for my $F ("$D/config.pl.sample", "$D/config.pl") {
    require $F if -f $F;
 }
 
+my $frequency = 1; # 1 check per minute
+my $sleep;
+if (defined $ARGV[0] && $ARGV[0] > 0) {
+   $frequency = $ARGV[0];
+}
+$frequency = 55 if $frequency > 55;
+$sleep = 55 / $frequency;
+
 sub alarm_needed {
    my $imap = Net::IMAP::Simple->new($host, %options) or die "" .
    "Connect: $Net::IMAP::Simple::errstr";
@@ -41,4 +50,7 @@ sub alarm_raise {
       });
 }
 
-alarm_raise if alarm_needed;
+while ($frequency-- > 0) {
+   alarm_raise if alarm_needed;
+   sleep $sleep if $frequency;
+}
