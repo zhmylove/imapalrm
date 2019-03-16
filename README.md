@@ -4,7 +4,7 @@ imapalrm is a simple perl script to send Telegram message if there are any unsee
 
 ## Typical usage
 
-Check out the latest version somethere, tune your configuration, give it appropriate permissions:
+Check out the latest version somewhere, tune your configuration, give it appropriate permissions:
 
 ```sh
 $ git clone https://github.com/zhmylove/imapalrm.git /home/user/bin/
@@ -23,6 +23,8 @@ Such a config will trigger an alarm every 30 seconds (60/2).
 ```
 
 ## Dependencies
+
+You can use cpanfile for automatic dependencies installation.
 
 * cpan WWW::Telegram::BotAPI
 * cpan Net::IMAP::Simple

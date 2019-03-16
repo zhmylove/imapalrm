@@ -26,12 +26,14 @@ for my $F ("$D/config.pl.sample", "$D/config.pl") {
 }
 
 my $frequency = 1; # 1 check per minute
+my $scale = 60; # 60 seconds
+my $time_limit = $scale * ( 55 / 60 );
 my $sleep;
 if (defined $ARGV[0] && $ARGV[0] > 0) {
    $frequency = $ARGV[0];
 }
-$frequency = 55 if $frequency > 55;
-$sleep = 55 / $frequency;
+$frequency = 55 if $frequency > $time_limit;
+$sleep = $time_limit / $frequency;
 
 sub alarm_needed {
    my $imap = Net::IMAP::Simple->new($host, %options) or die "" .
@@ -59,6 +61,7 @@ sub alarm_raise {
 }
 
 while ($frequency-- > 0) {
+   exit if time - $^T > $time_limit;
    alarm_raise if alarm_needed;
    sleep $sleep if $frequency;
 }
