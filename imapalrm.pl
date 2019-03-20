@@ -26,6 +26,7 @@ for my $F ("$D/config.pl.sample", "$D/config.pl") {
 }
 
 my $frequency = 1; # 1 check per minute
+my $timeout = 10; # 10 seconds for operations
 my $scale = 60; # 60 seconds
 my $time_limit = $scale * ( 55 / 60 );
 my $sleep;
@@ -60,8 +61,25 @@ sub alarm_raise {
       });
 }
 
+$SIG{ALRM} = sub { die "timeout\n" };
+
 while ($frequency-- > 0) {
    exit if time - $^T > $time_limit;
-   alarm_raise if alarm_needed;
+   my $needed;
+   
+   eval {
+      alarm $timeout;
+      $needed = alarm_needed;
+      alarm 0;
+   };
+   die $@ if $@ && $@ ne "timeout\n";
+   
+   eval {
+      alarm $timeout;
+      alarm_raise if $needed;
+      alarm 0;
+   };
+   die $@ if $@ && $@ ne "timeout\n";
+   
    sleep $sleep if $frequency;
 }
